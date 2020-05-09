@@ -85,7 +85,6 @@ class AuthProvider with ChangeNotifier {
 
   Future<bool> tryAutoLogin() async {
     final prefs = await SharedPreferences.getInstance();
-    print(prefs.containsKey('userData'));
     if (!prefs.containsKey('userData')) {
       return false;
     }

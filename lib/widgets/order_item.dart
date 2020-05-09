@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:math';
 import 'package:my_shop/providers/orders_provider.dart' as ord;
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import '../providers/cart_provider.dart';
 
 class OrderItem extends StatefulWidget {
@@ -19,9 +20,6 @@ class _OrderItemState extends State<OrderItem> {
   @override
   Widget build(BuildContext context) {
     List<CartItem> products = [];
-    widget.order.products.forEach((o) {
-      print(o.title);
-    });
     return Card(
       margin: EdgeInsets.all(10),
       child: Column(

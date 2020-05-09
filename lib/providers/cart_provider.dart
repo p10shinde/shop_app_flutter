@@ -16,6 +16,16 @@ class CartItem {
 
 class CartProvider with ChangeNotifier {
   Map<String, CartItem> _items = {};
+    String authToken;
+    String userId;
+
+  set auth(String token) {
+    this.authToken = token;
+  }
+
+  set user(String id) {
+    this.userId = id;
+  }
 
   Map<String, CartItem> get items {
     return {..._items};

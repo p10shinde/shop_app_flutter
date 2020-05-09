@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:my_shop/providers/auth_provider.dart';
 import 'package:provider/provider.dart';
 import '../providers/product_provider.dart';
 import '../providers/cart_provider.dart';
@@ -13,6 +14,7 @@ class ProductItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scaffold = Scaffold.of(context);
     openScreen(ProductProvider product) {
       Navigator.of(context)
           .pushNamed(ProductDetailScreen.routeName, arguments: product.id);
@@ -20,6 +22,7 @@ class ProductItem extends StatelessWidget {
 
     final product = Provider.of<ProductProvider>(context, listen: false);
     final cart = Provider.of<CartProvider>(context, listen: false);
+    final authData = Provider.of<AuthProvider>(context, listen: false);
     return ClipRRect(
       borderRadius: BorderRadius.circular(10),
       child: GridTile(
@@ -37,8 +40,19 @@ class ProductItem extends StatelessWidget {
               icon: pr.isFavorite
                   ? Icon(Icons.favorite)
                   : Icon(Icons.favorite_border),
-              onPressed: () {
-                pr.toggleFavoriteStatus();
+              onPressed: () async {
+                try {
+                  await pr.toggleFavoriteStatus(authData.token, authData.userId);
+                } catch (error) {
+                  scaffold.showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        error.toString(),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  );
+                }
               },
               color: Theme.of(context).accentColor,
             ),
@@ -54,14 +68,16 @@ class ProductItem extends StatelessWidget {
               Scaffold.of(context).hideCurrentSnackBar();
               Scaffold.of(context).showSnackBar(
                 SnackBar(
-                  action: SnackBarAction(label: 'Undo', onPressed: () { cart.removeSingelItem(product.id);},),
+                  action: SnackBarAction(
+                    label: 'Undo',
+                    onPressed: () {
+                      cart.removeSingelItem(product.id);
+                    },
+                  ),
                   duration: Duration(milliseconds: 2000),
                   content: Text(
                     'Added item to cart',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 15
-                    ),
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
                   ),
                 ),
               );
